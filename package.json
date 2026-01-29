@@ -1,0 +1,14 @@
+{
+  "name": "mern3_node",
+  "version": "1.0.0",
+  "description": "First Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
