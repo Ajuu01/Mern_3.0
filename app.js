@@ -1,8 +1,11 @@
 const express=require('express');
+const connectToDatabase = require('./database');
 const app=express()
 
+connectToDatabase()
+
 app.get("/",(req,res)=>{
-    res.json({
+    res.status(200).json({
         message:"Hello from Here"
     });
 })
@@ -17,3 +20,4 @@ app.get("/about",(req,res)=>{
 app.listen(3000,()=>{
     console.log("NODEJS Project has started.")
 })
+
