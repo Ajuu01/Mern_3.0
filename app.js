@@ -17,6 +17,11 @@ app.get("/",(req,res)=>{
 
 app.post("/blog",async(req,res)=>{
     const{title,subtitle,description,image}=req.body
+    if(!title || !subtitle || !description || !image){
+        return res.status(400).json({
+            message:"No empty field allowed."
+        })
+    }
     await Blog.create({
         title:title,
         subtitle:subtitle,
