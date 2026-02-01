@@ -7,6 +7,7 @@ app.use(express.json())
 
 const connectToDatabase = require('./database');
 const Blog = require("./model/blogModel");
+const fs=require('fs')
 connectToDatabase();
 
 const{multer,storage}=require('./middleware/multerConfig')
@@ -45,6 +46,63 @@ app.get('/blog',async(req,res)=>{
         data:blogs
     })
     app.use(express.static('./storage'))
+})
+
+app.get('/blog/:id',async(req,res)=>{
+    const id=req.params.id
+    const blog=await Blog.findById(id)
+    if(!blog){
+        return res.status(404).json({
+            message:"No blog found"
+        })
+    }
+    res.status(200).json({
+        message:("Blog fetched successfully"),
+        data:blog
+    })
+})
+
+app.delete("/blog/:id",async(req,res)=>{
+    const id=req.params.id
+    const blog=await Blog.findById(id)
+    const imageName=blog.image
+    await Blog.findByIdAndDelete(id)
+    fs.unlink(`storage/${imageName}`,(err)=>{
+        if(err){
+            console.log("Error")
+        }
+        else{
+            console.log("Image deleted successfully.")
+        }
+    })
+    res.status(200).json({
+        message:"Blog deleted successfully"
+    })
+})
+
+app.patch("/blog/:id",upload.single('image'),async(req,res)=>{
+    const id=req.params.id
+    const imgName=req.file.filename
+    const{title,subtitle,description}=req.body
+    const blog=await Blog.findById(id)
+    const imageName=blog.image
+    await Blog.findByIdAndUpdate(id,{
+        title:title,
+        subtitle:subtitle,
+        description:description,
+        image:imgName
+    })
+    fs.unlink(`storage/${imageName}`,(err)=>{
+        if(err){
+            console.log("Error")
+        }
+        else{
+            console.log("Image deleted successfully.")
+        }
+    })
+    res.status(200).json({
+        message:"Updated Successfully"
+    })
 })
 app.listen((process.env.PORT),()=>{
     console.log("NODEJS Project has started.")
