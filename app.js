@@ -8,11 +8,17 @@ app.use(express.json())
 const connectToDatabase = require('./database');
 const Blog = require("./model/blogModel");
 const fs=require('fs')
+const cors=require('cors')
 connectToDatabase();
 
 const{multer,storage}=require('./middleware/multerConfig')
 const upload=multer({storage:storage})
 
+app.use(cors(
+    {
+        origin:"http://localhost:5173"
+    }
+))
 app.get("/",(req,res)=>{
     res.status(200).json({
         message:"Hello from Here"
