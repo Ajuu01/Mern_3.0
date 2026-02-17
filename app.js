@@ -5,7 +5,7 @@ const app=express();
 
 app.use(express.json())
 
-const connectToDatabase = require('./database');
+const connectToDatabase = require('./database/index.js');
 const Blog = require("./model/blogModel");
 const fs=require('fs')
 const cors=require('cors')
@@ -27,7 +27,14 @@ app.get("/",(req,res)=>{
 
 app.post("/blog",upload.single('image'), async(req,res)=>{
     const{title,subtitle,description,image}=req.body
-    const filename=req.file.filename
+    // const filename=req.file.filename
+    let filename;
+    if(req.file){
+        filename=req.file.filename
+    }
+    else{
+        filename="17699743976574.jpg"
+    }
     if(!title || !subtitle || !description){
         return res.status(400).json({
             message:"No empty field allowed."
