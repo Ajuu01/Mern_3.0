@@ -33,7 +33,7 @@ app.post("/blog",upload.single('image'), async(req,res)=>{
         filename=req.file.filename
     }
     else{
-        filename="17699743976574.jpg"
+        filename="1769974565140-20231128_170154.jpg"
     }
     if(!title || !subtitle || !description){
         return res.status(400).json({
