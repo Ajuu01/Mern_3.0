@@ -33,7 +33,7 @@ app.post("/blog",upload.single('image'), async(req,res)=>{
         filename=req.file.filename
     }
     else{
-        filename="1769974565140-20231128_170154.jpg"
+        filename="1771432460337-6th_post_6.png"
     }
     if(!title || !subtitle || !description){
         return res.status(400).json({
@@ -95,10 +95,17 @@ app.delete("/blog/:id",async(req,res)=>{
 
 app.patch("/blog/:id",upload.single('image'),async(req,res)=>{
     const id=req.params.id
-    const imgName=req.file.filename
+    // const imgName=req.file.filename
     const{title,subtitle,description}=req.body
     const blog=await Blog.findById(id)
     const imageName=blog.image
+    let imgName
+    if(req.file){
+        imgName=req.file.filename
+    }
+    else{
+        imgName=imageName
+    }
     await Blog.findByIdAndUpdate(id,{
         title:title,
         subtitle:subtitle,
