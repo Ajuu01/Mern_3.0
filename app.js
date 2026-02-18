@@ -100,7 +100,7 @@ app.patch("/blog/:id",upload.single('image'),async(req,res)=>{
     const imageName=blog.image
     let imgName
     if(req.file){
-        imgName=req.file.filename
+        imgName="https://mern-3-0-1.onrender.com/"+req.file.filename
     }
     else{
         imgName=imageName
