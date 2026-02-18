@@ -4,7 +4,7 @@ const express=require('express');
 const app=express();
 
 app.use(express.json())
-
+app.use(express.static('./storage'))
 const connectToDatabase = require('./database/index.js');
 const Blog = require("./model/blogModel");
 const fs=require('fs')
@@ -58,7 +58,6 @@ app.get('/blog',async(req,res)=>{
         message:("Blogs fetched successfully"),
         data:blogs
     })
-    app.use(express.static('./storage'))
 })
 
 app.get('/blog/:id',async(req,res)=>{
