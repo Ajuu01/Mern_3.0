@@ -33,7 +33,7 @@ app.post("/blog",upload.single('image'), async(req,res)=>{
         filename="https://mern-3-0-1.onrender.com/"+req.file.filename
     }
     else{
-        filename="https://mern-3-0-1.onrender.com/"+"1771432460337-6th_post_6.png"
+        filename="https://www.bbc.co.uk/news/technology-43085053"
     }
     if(!title || !subtitle || !description){
         return res.status(400).json({
