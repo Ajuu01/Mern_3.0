@@ -16,7 +16,7 @@ const upload=multer({storage:storage})
 
 app.use(cors(
     {
-        origin:"https://blog-beige-two-18.vercel.app/"
+        origin:["http://localhost:5173","https://blog-beige-two-18.vercel.app/"]
     }
 ))
 app.get("/",(req,res)=>{
