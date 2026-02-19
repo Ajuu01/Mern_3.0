@@ -232,7 +232,7 @@ app.patch("/blog/:id",upload.single('image'),async(req,res)=>{
     const imageName=blog.image
     let imgName
     if(req.file){
-        imgName=req.file.filename
+        imgName="https://mern-3-0-1.onrender.com/"+req.file.filename
     }
     else{
         imgName=imageName
@@ -255,10 +255,7 @@ app.patch("/blog/:id",upload.single('image'),async(req,res)=>{
         message:"Updated Successfully"
     })
 })
-app.use(express.static('./storage'))
-app.listen((process.env.PORT),()=>{
-    console.log("NODEJS Project has started.")
-})
+
 
 
 
