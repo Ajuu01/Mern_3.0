@@ -163,7 +163,7 @@ app.post("/blog",upload.single('image'), async (req,res)=>{
    if(req.file){
      filename = req.file.filename 
    }else{
-    filename = "https://images.pexels.com/photos/20787/pexels-photo.jpg"
+    filename = "image.png"
    }
    if(!title || !subtitle || !description){
         return res.status(400).json({
