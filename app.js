@@ -164,7 +164,7 @@ app.post("/blog",upload.single('image'), async (req,res)=>{
      filename ="https://mern-3-0-1.onrender.com/blog"+ req.file.filename 
    }else{
     filename = "image.png"
-
+   }
    if(!title || !subtitle || !description){
         return res.status(400).json({
             message : "Please provide title,subtitle,description"
