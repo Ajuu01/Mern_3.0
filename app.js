@@ -265,4 +265,12 @@ app.listen(process.env.PORT,()=>{
     console.log("NodeJs project has started")
 })
 
+const path = require("path");
+
+app.use(express.static(path.join(__dirname, "dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
 // mongodb+srv://digitalpathshala:<password>@cluster0.iibdr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
