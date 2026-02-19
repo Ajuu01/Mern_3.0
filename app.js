@@ -161,7 +161,7 @@ app.post("/blog",upload.single('image'), async (req,res)=>{
    const {title,subtitle,description} = req.body 
    let filename;
    if(req.file){
-     filename ="https://mern-3-0-1.onrender.com/blog"+ req.file.filename 
+     filename = req.file.filename 
    }else{
     filename = "image.png"
    }
