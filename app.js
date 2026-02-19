@@ -6,7 +6,7 @@ const app=express();
 app.use(express.json())
 // app.use(express.static('./storage'))
 // This makes files available at /storage/filename.jpg
-app.use('/storage', express.static('storage')); 
+// app.use('/storage', express.static('storage')); 
 
 const connectToDatabase = require('./database/index.js');
 const Blog = require("./model/blogModel");
@@ -126,6 +126,7 @@ app.patch("/blog/:id",upload.single('image'),async(req,res)=>{
         message:"Updated Successfully"
     })
 })
+app.use(express.static('./storage'))
 app.listen((process.env.PORT),()=>{
     console.log("NODEJS Project has started.")
 })
