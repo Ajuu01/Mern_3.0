@@ -224,32 +224,40 @@ app.delete("/blog/:id",async (req,res)=>{
     })
 })
 
-app.patch('/blog/:id',upload.single('image'), async(req,res)=>{
-    const id = req.params.id 
-    const {title,subtitle,description} = req.body 
-    let imageName;
+app.patch("/blog/:id",upload.single('image'),async(req,res)=>{
+    const id=req.params.id
+    // const imgName=req.file.filename
+    const{title,subtitle,description}=req.body
+    const blog=await Blog.findById(id)
+    const imageName=blog.image
+    let imgName
     if(req.file){
-        imageName= req.file.filename
-        const blog = await Blog.findById(id)
-        const oldImageName = blog.image
-    
-        fs.unlink(`storage/${oldImageName}`,(err)=>{
-            if(err){
-                console.log(err)
-            }else{
-                console.log("File deleted successfully")
-            }
-        })
+        imgName=req.file.filename
     }
-   await Blog.findByIdAndUpdate(id,{
-        title : title, 
-        subtitle : subtitle, 
-        description : description, 
-        image : imageName
+    else{
+        imgName=imageName
+    }
+    await Blog.findByIdAndUpdate(id,{
+        title:title,
+        subtitle:subtitle,
+        description:description,
+        image:imgName
+    })
+    fs.unlink(`storage/${imageName}`,(err)=>{
+        if(err){
+            console.log("Error")
+        }
+        else{
+            console.log("Image deleted successfully.")
+        }
     })
     res.status(200).json({
-        message : "Blog updated successfully"
+        message:"Updated Successfully"
     })
+})
+app.use(express.static('./storage'))
+app.listen((process.env.PORT),()=>{
+    console.log("NODEJS Project has started.")
 })
 
 
