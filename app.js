@@ -33,10 +33,10 @@ app.post("/blog",upload.single('image'), async(req,res)=>{
     // const filename=req.file.filename
     let filename;
     if(req.file){
-        filename="/storage/"+req.file.filename
+        filename="https://mern-3-0-1.onrender.com/"+req.file.filename
     }
     else{
-        filename="https://www.bbc.co.uk/news/technology-43085053"
+        filename="image.png"
     }
     if(!title || !subtitle || !description){
         return res.status(400).json({
@@ -103,7 +103,7 @@ app.patch("/blog/:id",upload.single('image'),async(req,res)=>{
     const imageName=blog.image
     let imgName
     if(req.file){
-        imgName="/storage/"+req.file.filename
+        imgName="https://mern-3-0-1.onrender.com/"+req.file.filename
     }
     else{
         imgName=imageName
