@@ -232,7 +232,7 @@ app.patch("/blog/:id",upload.single('image'),async(req,res)=>{
     const imageName=blog.image
     let imgName
     if(req.file){
-        imgName="https://mern-3-0-1.onrender.com/"+req.file.filename
+        imgName=req.file.filename
     }
     else{
         imgName=imageName
