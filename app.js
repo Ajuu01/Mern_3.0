@@ -163,8 +163,7 @@ app.post("/blog",upload.single('image'), async (req,res)=>{
    if(req.file){
      filename ="https://mern-3-0-1.onrender.com/blog"+ req.file.filename 
    }else{
-    filename = "https://cdn.mos.cms.futurecdn.net/i26qpaxZhVC28XRTJWafQS-1200-80.jpeg"
-   }
+    filename = "image.png"
 
    if(!title || !subtitle || !description){
         return res.status(400).json({
