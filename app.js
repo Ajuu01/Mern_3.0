@@ -73,55 +73,96 @@ app.get("/blog/:id",async (req,res)=>{
     })
   
 })
-app.delete("/blog/:id",async (req,res)=>{
-    const id = req.params.id
-    const blog = await Blog.findById(id)
-    const imageName = blog.image
+// app.delete("/blog/:id",async (req,res)=>{
+//     const id = req.params.id
+//     const blog = await Blog.findById(id)
+//     const imageName = blog.image
  
-    fs.unlink(`storage/${imageName}`,(err)=>{
-        if(err){
-            console.log(err)
-        }else{
-            console.log("File deleted successfully")
-        }
-    })
-    await Blog.findByIdAndDelete(id)
-    res.status(200).json({
-        message : 'Blog deleted successfully'
-    })
-})
+//     fs.unlink(`storage/${imageName}`,(err)=>{
+//         if(err){
+//             console.log(err)
+//         }else{
+//             console.log("File deleted successfully")
+//         }
+//     })
+//     await Blog.findByIdAndDelete(id)
+//     res.status(200).json({
+//         message : 'Blog deleted successfully'
+//     })
+// })
 
-app.patch("/blog/:id",upload.single('image'),async(req,res)=>{
-    const id=req.params.id
-    // const imgName=req.file.filename
-    const{title,subtitle,description}=req.body
-    const blog=await Blog.findById(id)
-    const imageName=blog.image
-    let imgName
-    if(req.file){
-        imgName=req.file.filename
+// app.patch("/blog/:id",upload.single('image'),async(req,res)=>{
+//     const id=req.params.id
+//     // const imgName=req.file.filename
+//     const{title,subtitle,description}=req.body
+//     const blog=await Blog.findById(id)
+//     const imageName=blog.image
+//     let imgName
+//     if(req.file){
+//         imgName=req.file.filename
+//     }
+//     else{
+//         imgName=imageName
+//     }
+//     await Blog.findByIdAndUpdate(id,{
+//         title:title,
+//         subtitle:subtitle,
+//         description:description,
+//         image:imgName
+//     })
+//     fs.unlink(`storage/${imageName}`,(err)=>{
+//         if(err){
+//             console.log("Error")
+//         }
+//         else{
+//             console.log("Image deleted successfully.")
+//         }
+//     })
+//     res.status(200).json({
+//         message:"Updated Successfully"
+//     })
+// })
+app.delete("/blog/:id", async (req, res) => {
+    const blog = await Blog.findById(req.params.id);
+
+    if (blog.image !== "image.png") {
+        fs.unlink(`storage/${blog.image}`, err => {
+            if (err) console.log(err);
+        });
     }
-    else{
-        imgName=imageName
+
+    await Blog.findByIdAndDelete(req.params.id);
+    res.json({ message: "Deleted successfully" });
+});
+
+app.patch("/blog/:id", upload.single('image'), async (req, res) => {
+    const { title, subtitle, description } = req.body;
+    const blog = await Blog.findById(req.params.id);
+
+    let finalImage = blog.image;
+
+    // only if new image uploaded
+    if (req.file) {
+        finalImage = req.file.filename;
+
+        // delete old image ONLY if not default
+        if (blog.image !== "image.png") {
+            fs.unlink(`storage/${blog.image}`, err => {
+                if (err) console.log(err);
+            });
+        }
     }
-    await Blog.findByIdAndUpdate(id,{
-        title:title,
-        subtitle:subtitle,
-        description:description,
-        image:imgName
-    })
-    fs.unlink(`storage/${imageName}`,(err)=>{
-        if(err){
-            console.log("Error")
-        }
-        else{
-            console.log("Image deleted successfully.")
-        }
-    })
-    res.status(200).json({
-        message:"Updated Successfully"
-    })
-})
+
+    await Blog.findByIdAndUpdate(req.params.id, {
+        title,
+        subtitle,
+        description,
+        image: finalImage
+    });
+
+    res.json({ message: "Updated successfully" });
+});
+
 
 
 
