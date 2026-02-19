@@ -163,7 +163,7 @@ app.post("/blog",upload.single('image'), async (req,res)=>{
    if(req.file){
      filename = req.file.filename 
    }else{
-    filename = "image.png"
+    filename = "https://www.vecteezy.com/free-photos/image"
    }
    if(!title || !subtitle || !description){
         return res.status(400).json({
