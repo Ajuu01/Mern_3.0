@@ -161,7 +161,7 @@ app.post("/blog",upload.single('image'), async (req,res)=>{
    const {title,subtitle,description} = req.body 
    let filename;
    if(req.file){
-     filename = req.file.filename 
+     filename ="https://mern-3-0-1.onrender.com/blog"+ req.file.filename 
    }else{
     filename = "https://cdn.mos.cms.futurecdn.net/i26qpaxZhVC28XRTJWafQS-1200-80.jpeg"
    }
@@ -230,7 +230,7 @@ app.patch('/blog/:id',upload.single('image'), async(req,res)=>{
     const {title,subtitle,description} = req.body 
     let imageName;
     if(req.file){
-        imageName=  req.file.filename
+        imageName="https://mern-3-0-1.onrender.com/blog" + req.file.filename
         const blog = await Blog.findById(id)
         const oldImageName = blog.image
     
