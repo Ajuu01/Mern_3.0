@@ -229,7 +229,7 @@ app.patch('/blog/:id',upload.single('image'), async(req,res)=>{
     const {title,subtitle,description} = req.body 
     let imageName;
     if(req.file){
-        imageName="https://mern-3-0-1.onrender.com/blog" + req.file.filename
+        imageName= req.file.filename
         const blog = await Blog.findById(id)
         const oldImageName = blog.image
     
