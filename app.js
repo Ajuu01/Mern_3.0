@@ -272,6 +272,7 @@ require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
+const path = require('path');
 const connectToDatabase = require('./database');
 const Blog = require('./model/blogModel');
 const { upload } = require('./middleware/multerConfig');
@@ -285,10 +286,15 @@ app.use(cors({
 }));
 
 // Serve uploaded images
-app.use('/storage', express.static('./storage'));
+app.use('/storage', express.static(path.join(__dirname, 'storage')));
 
 // Connect to MongoDB
 connectToDatabase();
+
+// Helper function to get full image URL
+const getImageUrl = (req, filename) => {
+    return `${req.protocol}://${req.get('host')}/storage/${filename}`;
+};
 
 // --- Routes ---
 
@@ -299,21 +305,23 @@ app.get('/', (req, res) => {
 
 // Create Blog
 app.post('/blog', upload.single('image'), async (req, res) => {
-    const { title, subtitle, description } = req.body;
-    if (!title || !subtitle || !description) {
-        return res.status(400).json({ message: "Please provide title, subtitle, description" });
-    }
-
-    // Use uploaded image or default
-    let filename = req.file ? req.file.filename : "image.png";
-
     try {
+        const { title, subtitle, description } = req.body;
+        if (!title || !subtitle || !description) {
+            return res.status(400).json({ message: "Please provide title, subtitle, description" });
+        }
+
+        // Use uploaded image or default
+        let filename = req.file ? req.file.filename : "image.png";
+        const imageUrl = getImageUrl(req, filename);
+
         const blog = await Blog.create({
             title,
             subtitle,
             description,
-            image: filename
+            image: imageUrl
         });
+
         res.status(201).json({ message: "Blog created successfully", data: blog });
     } catch (err) {
         res.status(500).json({ message: "Error creating blog", error: err.message });
@@ -347,9 +355,11 @@ app.delete('/blog/:id', async (req, res) => {
         const blog = await Blog.findById(req.params.id);
         if (!blog) return res.status(404).json({ message: "Blog not found" });
 
-        // Delete image if not default
-        if (blog.image !== "image.png") {
-            fs.unlink(`storage/${blog.image}`, (err) => {
+        // Delete old image if uploaded (not default)
+        const defaultImage = getImageUrl(req, "image.png");
+        if (blog.image !== defaultImage) {
+            const filename = path.basename(blog.image); // get actual file name
+            fs.unlink(path.join(__dirname, 'storage', filename), (err) => {
                 if (err) console.log("Error deleting image:", err);
                 else console.log("Image deleted successfully");
             });
@@ -369,21 +379,31 @@ app.patch('/blog/:id', upload.single('image'), async (req, res) => {
         const blog = await Blog.findById(req.params.id);
         if (!blog) return res.status(404).json({ message: "Blog not found" });
 
-        // Decide which image to keep
-        let newImage = req.file ? req.file.filename : blog.image;
+        let newFilename;
+        if (req.file) {
+            // New image uploaded
+            newFilename = req.file.filename;
 
-        // Delete old image if new one uploaded and old is not default
-        if (req.file && blog.image !== "image.png") {
-            fs.unlink(`storage/${blog.image}`, (err) => {
-                if (err) console.log("Error deleting old image:", err);
-                else console.log("Old image deleted successfully");
-            });
+            // Delete old image if not default
+            const defaultImage = getImageUrl(req, "image.png");
+            if (blog.image !== defaultImage) {
+                const oldFile = path.basename(blog.image);
+                fs.unlink(path.join(__dirname, 'storage', oldFile), (err) => {
+                    if (err) console.log("Error deleting old image:", err);
+                    else console.log("Old image deleted successfully");
+                });
+            }
+        } else {
+            // Keep old image
+            newFilename = path.basename(blog.image); // extract filename from URL
         }
+
+        const imageUrl = getImageUrl(req, newFilename);
 
         blog.title = title || blog.title;
         blog.subtitle = subtitle || blog.subtitle;
         blog.description = description || blog.description;
-        blog.image = newImage;
+        blog.image = imageUrl;
 
         await blog.save();
         res.status(200).json({ message: "Blog updated successfully", data: blog });
