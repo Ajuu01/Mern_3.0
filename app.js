@@ -30,7 +30,7 @@ app.post("/blog",upload.single('image'), async (req,res)=>{
    if(req.file){
      filename = req.file.filename 
    }else{
-    filename = "image.png"
+    filename = "https://mern-3-0-1.onrender.com/storage/image.png"
    }
    if(!title || !subtitle || !description){
         return res.status(400).json({
@@ -125,7 +125,7 @@ app.get("/blog/:id",async (req,res)=>{
 app.delete("/blog/:id", async (req, res) => {
     const blog = await Blog.findById(req.params.id);
 
-    if (blog.image !== "image.png") {
+    if (blog.image !== "https://mern-3-0-1.onrender.com/storage/image.png") {
         fs.unlink(`storage/${blog.image}`, err => {
             if (err) console.log(err);
         });
@@ -146,7 +146,7 @@ app.patch("/blog/:id", upload.single('image'), async (req, res) => {
         finalImage = req.file.filename;
 
         // delete old image ONLY if not default
-        if (blog.image !== "image.png") {
+        if (blog.image !== "https://mern-3-0-1.onrender.com/storage/image.png") {
             fs.unlink(`storage/${blog.image}`, err => {
                 if (err) console.log(err);
             });
