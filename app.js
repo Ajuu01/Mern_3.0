@@ -28,7 +28,7 @@ app.post("/blog",upload.single('image'), async (req,res)=>{
    const {title,subtitle,description} = req.body 
    let filename;
    if(req.file){
-     filename = req.file.filename 
+     filename = "https://mern-3-0-1.onrender.com/storage/"+req.file.filename 
    }else{
     filename = "https://mern-3-0-1.onrender.com/storage/image.png"
    }
@@ -143,7 +143,7 @@ app.patch("/blog/:id", upload.single('image'), async (req, res) => {
 
     // only if new image uploaded
     if (req.file) {
-        finalImage = req.file.filename;
+        finalImage = "https://mern-3-0-1.onrender.com/storage/"+req.file.filename;
 
         // delete old image ONLY if not default
         if (blog.image !== "https://mern-3-0-1.onrender.com/storage/image.png") {
